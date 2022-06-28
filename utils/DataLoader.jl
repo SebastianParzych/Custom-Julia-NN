@@ -1,5 +1,4 @@
 
-
 Random.seed!(2)
 
 function custom_split(X, y::AbstractVector; dims=1, ratio_train=0.8, kwargs...)
@@ -14,7 +13,7 @@ function custom_split(X, y::AbstractVector; dims=1, ratio_train=0.8, kwargs...)
     return selectdim(X, dims, i_train), y[i_train], selectdim(X, dims, i_test), y[i_test]
 end
 
-function normalize(X_train, X_test; dims=1, kwargs...)
+function norm(X_train, X_test; dims=1, kwargs...)
     col_mean = mean(X_train; dims)
     col_std = std(X_train; dims)
 
@@ -33,7 +32,7 @@ function prepare_data(X, y; do_normal=true, do_onehot=true, kwargs...)
     X_train, y_train, X_test, y_test = custom_split(X, y; kwargs...)
 
     if do_normal
-        X_train, X_test = normalize(X_train, X_test; kwargs...)
+        X_train, X_test = norm(X_train, X_test; kwargs...)
     end
 
     classes = unique(y)

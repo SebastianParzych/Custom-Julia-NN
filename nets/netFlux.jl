@@ -1,8 +1,3 @@
-using RDatasets
-using Flux
-using Flux: mse, crossentropy
-
-
 n_hidden = 2
 # DEFAULT MODEL SETUP
 DEFAULT_MODEL = Chain(
@@ -13,10 +8,14 @@ DEFAULT_MODEL = Chain(
 DEFAULT_OPT = Descent(0.1)  # Optimalizer
 DEFAULT_PARAMS = Flux.params(DEFAULT_MODEL)
 DEFAULT_LOSS_FUN(m, x, y) = crossentropy(m(x), y) # Mean square error
-
 # used function
 onecold(y, classes) = [classes[argmax(y_col)] for y_col in eachcol(y)]
 accuracy(m, x, y) = mean(onecold(m(x), classes) .== onecold(y, classes))
+
+
+function getFluxAccuracyVal(fluxAccuracyHistory)
+    return sum(fluxAccuracyHistory) / length(fluxAccuracyHistory)
+end
 
 function getDefaultFlux()
     return DEFAULT_MODEL, DEFAULT_OPT, DEFAULT_LOSS_FUN, DEFAULT_PARAMS

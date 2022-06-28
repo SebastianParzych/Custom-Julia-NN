@@ -1,8 +1,8 @@
 DefaultNet() = randn(4, 4), randn(3, 4), randn(4, 4), randn(3, 4)
 
-function predict(x, wh, wo, y)
-    x̂ = fullyconnected(wh, 4, 4, x, ReLU)
-    ŷ = fullyconnected(wo, 3, 4, x̂, σ)
+function predict(net, x)
+    x̂ = fullyconnected(net.Wh[:], 4, 4, x, ReLU)
+    ŷ = fullyconnected(net.Wo[:], 3, 4, x̂, σ)
     return argmax(ŷ)
 end
 
@@ -23,6 +23,8 @@ function getSebastianDefaultNet()
     net = NetWeights(Wh, Wo, dWh, dWo)
     return net
 end
+Sebastianonecold(y, classes) = [classes[argmax(y_col)] for y_col in eachcol(y)]
+SebastianAccuracy(m, x, y) = mean(onecold(m(x), classes) .== onecold(y, classes))
 
 function trainSebastian(net, X_train, y_train, epochs, lr)
     Loss_history = Float64[]
@@ -39,7 +41,7 @@ function trainSebastian(net, X_train, y_train, epochs, lr)
             dnet_Wo(x, wh, wo, y) = J(w -> foward(x, wh, w, y), wo)
             net.dWo[:] = dnet_Wo(x, net.Wh[:], net.Wo[:], y)
             push!(epoch_L, L)
-            push!(epoch_acc, predict(x, net.Wh[:], net.Wo[:], y) == argmax(y) ? 1 : 0)
+            push!(epoch_acc, predict(net, x) == argmax(y) ? 1 : 0)
             # Opt
             net.Wh -= lr * net.dWh
             net.Wo -= lr * net.dWo

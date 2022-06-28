@@ -1,5 +1,3 @@
-import LinearAlgebra: diagm
-
 
 diagonal(m) = diagm(0 => vec(m))
 J = function jacobian(f, args::Vector{T}) where {T<:Number}
@@ -130,8 +128,6 @@ predict(net, x) =
 
         return argmax(x)
     end
-
-
 
 accuracy(network, X, y) =
     let

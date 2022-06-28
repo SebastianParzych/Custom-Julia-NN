@@ -1,5 +1,17 @@
-using Random
-using Statistics
-using RDatasets
-using Random
-using Plots
+using Pkg
+libs = [:Random, :Statistics, :RDatasets,
+    :DataFrames, :Plots, :TimerOutputs, :Flux, :LinearAlgebra,
+    :Combinatorics
+]
+
+tryusing(pkgsym) =
+    try
+        @eval using $pkgsym
+        return true
+    catch e
+        Pkg.add(pkgsym)
+    end
+
+for lib in libs
+    tryusing(lib)
+end
