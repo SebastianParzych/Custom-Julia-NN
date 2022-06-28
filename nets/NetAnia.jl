@@ -98,23 +98,27 @@ update(net, x, y, α::Float64) =
     end
 
 
-trainAnia(net, X_train, y_train, α) =
+trainAnia(net, X_train, y_train, epochs, α) =
     let
         Loss_history = Float64[]
-        for j = 1:5
-            epoch_L = []
+        Acc_history = Float64[]
+        for j = 1:epochs
+            epoch_L = Float64[]
+            epoch_acc = Float64[]
             for i in 1:size(X_train)[2]
                 x = X_train[:, i]
                 y = y_train[:, i]
                 Ei = forward(net, x, y)
                 push!(epoch_L, Ei)
+                push!(epoch_acc, predict(net, x) == argmax(y) ? 1 : 0)
                 backpropagation(net, x, y)
                 update(net, x, y, α)
             end
             push!(Loss_history, std(epoch_L))
+            push!(Acc_history, sum(epoch_acc) / length(epoch_acc) * 100)
         end
 
-        return Loss_history
+        return Loss_history, Acc_history / 100
     end
 
 
@@ -139,7 +143,6 @@ accuracy(network, X, y) =
         end
         return accuracy_history, sum(accuracy_history) / length(accuracy_history) * 100
     end
-#   return string("Accuracy: ", sum([predict(network, x[1]) == argmax(x[2]) ? 1 : 0 for x in data_set]) / length(data_set) * 100, "%")
 
 function getDefaultAniaNet()
     net = NeuralNetwork()
