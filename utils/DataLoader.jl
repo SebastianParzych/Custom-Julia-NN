@@ -1,5 +1,11 @@
+
 using Random
 using Statistics
+using RDatasets
+using Random
+
+
+Random.seed!(2)
 
 function custom_split(X, y::AbstractVector; dims=1, ratio_train=0.8, kwargs...)
     n = length(y)
@@ -42,4 +48,15 @@ function prepare_data(X, y; do_normal=true, do_onehot=true, kwargs...)
     end
 
     return X_train, y_train, X_test, y_test, classes
+end
+
+function getRawDataset()
+    return dataset("datasets", "iris")
+end
+
+function getPrepearedData()
+    iris = getRawDataset()
+    X = Matrix(iris[:, 1:4])
+    y = iris.Species
+    return prepare_data(X', y; dims=2)
 end
