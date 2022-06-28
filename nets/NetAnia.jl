@@ -1,10 +1,6 @@
 import LinearAlgebra: diagm
 
 
-
-
-
-
 diagonal(m) = diagm(0 => vec(m))
 J = function jacobian(f, args::Vector{T}) where {T<:Number}
     jacobian_columns = Matrix{T}[]
@@ -22,7 +18,6 @@ J = function jacobian(f, args::Vector{T}) where {T<:Number}
     end
     hcat(jacobian_columns...)
 end
-
 
 mutable struct Layer
     m::Int
@@ -103,7 +98,7 @@ update(net, x, y, α::Float64) =
     end
 
 
-trainAnia(net, X_train, y_train, α::Float64) =
+trainAnia(net, X_train, y_train, α) =
     let
         Loss_history = Float64[]
         for j = 1:5
@@ -134,10 +129,17 @@ predict(net, x) =
 
 
 
-accuracy(network, data_set) =
+accuracy(network, X, y) =
     let
-        return string("Accuracy: ", sum([predict(network, x[1]) == argmax(x[2]) ? 1 : 0 for x in data_set]) / length(data_set) * 100, "%")
+        accuracy_history = Float64[]
+        for i in 1:size(X)[2]
+            x = X_train[:, i]
+            y = y_train[:, i]
+            push!(accuracy_history, predict(network, x) == argmax(y) ? 1 : 0)
+        end
+        return accuracy_history, sum(accuracy_history) / length(accuracy_history) * 100
     end
+#   return string("Accuracy: ", sum([predict(network, x[1]) == argmax(x[2]) ? 1 : 0 for x in data_set]) / length(data_set) * 100, "%")
 
 function getDefaultAniaNet()
     net = NeuralNetwork()

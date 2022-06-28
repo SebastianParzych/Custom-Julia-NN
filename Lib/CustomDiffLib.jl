@@ -31,6 +31,18 @@ tan(x::Dual) = Dual(tan(x.v), one(x.v) * x.dv + tan(x.v)^2 * x.dv)
 exp(x::Dual) = Dual(exp(x.v), exp(x.v) * x.dv)
 sqrt(x::Dual) = Dual(sqrt(x.v), 0.5 / sqrt(x.v) * x.dv)
 isless(x::Dual, y::Dual) = x.v < y.v;
+max(x::Dual, y::Dual) = Dual(max(x.v, y.v), if x.v > y.v
+    1 * x.dv
+else
+    1 * y.dv
+end); # what about dv
+min(x::Dual, y::Dual) = Dual(min(x.v, y.v), if x.v < y.v
+    1 * x.dv
+else
+    1 * y.dv
+end); # what about dv
+log(x::Dual) = Dual(log(x.v), (1 / abs(x.v)) * x.dv)
+
 
 convert(::Type{Dual{T}}, x::Dual) where {T} = Dual(convert(T, x.v), convert(T, x.dv))
 convert(::Type{Dual{T}}, x::Number) where {T} = Dual(convert(T, x), zero(T))

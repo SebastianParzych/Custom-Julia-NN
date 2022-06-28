@@ -1,9 +1,4 @@
 
-using Random
-using Statistics
-using RDatasets
-using Random
-
 
 Random.seed!(2)
 
