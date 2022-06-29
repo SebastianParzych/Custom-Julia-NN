@@ -11,7 +11,7 @@ function getTrainingAccValFromHistory(acc_his)
     return sum(acc_his) / length(acc_his)
 end
 # Funkcje kosztu
-mean_squared_loss(y::Vector, ŷ::Vector) = sum(0.5(y - ŷ) .^ 2)
+mean_squared_loss(y, ŷ) = sum(0.5(y - ŷ) .^ 2)
 
 function binary_cross_entropy(y::Vector, ŷ::Vector)
     epsilon = eps(1.0)

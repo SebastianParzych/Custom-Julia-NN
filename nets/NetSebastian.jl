@@ -1,4 +1,4 @@
-DefaultNet() = randn(4, 4), randn(3, 4), randn(4, 4), randn(3, 4)
+DefaultNet(nHidden) = randn(4, nHidden), randn(3, nHidden), randn(4, nHidden), randn(3, nHidden)
 fullyconnected(w::Vector, n::Number, m::Number, v::Vector, activation::Function) = activation.(reshape(w, n, m) * v)
 function predict(net, x)
     x̂ = fullyconnected(net.Wh[:], 4, 4, x, ReLU)
@@ -6,9 +6,9 @@ function predict(net, x)
     return argmax(ŷ)
 end
 
-function foward(x, wh, wo, y)
-    x̂ = fullyconnected(wh, 4, 4, x, ReLU)
-    ŷ = fullyconnected(wo, 3, 4, x̂, σ)
+function foward(x, net, y)
+    x̂ = fullyconnected(net.Wh, 4, net.nHidden, x, ReLU)
+    ŷ = fullyconnected(net.Wo, 3, nHidden, x̂, σ)
     E = mean_squared_loss(y, ŷ)
 end
 
@@ -17,10 +17,11 @@ mutable struct NetWeights
     Wo
     dWh
     dWo
+    nHidden
 end
-function getSebastianDefaultNet()
-    Wh, Wo, dWh, dWo = DefaultNet()
-    net = NetWeights(Wh, Wo, dWh, dWo)
+function getSebastianDefaultNet(nHidden)
+    Wh, Wo, dWh, dWo = DefaultNet(nHidden)
+    net = NetWeights(Wh, Wo, dWh, dWo, nHidden)
     return net
 end
 Sebastianonecold(y, classes) = [classes[argmax(y_col)] for y_col in eachcol(y)]
@@ -35,7 +36,7 @@ function trainSebastian(net, X_train, y_train, epochs, lr)
         for i in 1:size(X_train)[2]
             x = X_train[:, i]
             y = y_train[:, i]
-            L = foward(x, net.Wh[:], net.Wo[:], y)
+            L = foward(x, net, y)
             dnet_Wh(x, wh, wo, y) = J(w -> foward(x, w, wo, y), wh)
             net.dWh[:] = dnet_Wh(x, net.Wh[:], net.Wo[:], y)
             dnet_Wo(x, wh, wo, y) = J(w -> foward(x, wh, w, y), wo)

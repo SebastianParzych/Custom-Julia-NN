@@ -143,9 +143,10 @@ accuracyFromAccHistory(history) =
     let
         return sum(history) / length(history)
     end
-function getDefaultAniaNet()
+
+function getDefaultAniaNet(nHidden)
     net = NeuralNetwork()
-    net.AddLayer(4, 4, ReLU)
-    net.AddLayer(4, 3, σ)
+    net.AddLayer(4, nHidden, ReLU)
+    net.AddLayer(nHidden, 3, σ)
     return net
 end

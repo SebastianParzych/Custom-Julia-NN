@@ -13,6 +13,14 @@ onecold(y, classes) = [classes[argmax(y_col)] for y_col in eachcol(y)]
 accuracy(m, x, y) = mean(onecold(m(x), classes) .== onecold(y, classes))
 
 
+function create_model(nHiddenm)
+    return Chain(
+        Dense(size(X_train, 1), nHiddenm, relu),
+        Dense(nHiddenm, size(y_train, 1), identity),
+        softmax,
+    )
+end
+
 
 getFluxAccuracyValFromTest(net, X, y) =
     let
@@ -25,8 +33,8 @@ getFluxAccuracyValFromTest(net, X, y) =
         return accuracy_history, sum(accuracy_history) / length(accuracy_history)
     end
 
-function getDefaultFlux()
-    return DEFAULT_MODEL, DEFAULT_OPT, DEFAULT_LOSS_FUN, DEFAULT_PARAMS
+function getDefaultFlux(nHiddenm)
+    return create_model(nHiddenm), DEFAULT_OPT, DEFAULT_LOSS_FUN, DEFAULT_PARAMS
 end
 
 function train(net, ps, X_train, y_train, epochs, opt, LossFun)
