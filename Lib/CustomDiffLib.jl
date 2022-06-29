@@ -3,9 +3,7 @@
 
 
 
-# Zdefiniowanie struktury
-
-
+# Zdefiniowanie struktury liczby dualnych
 struct Dual{T<:Number} <: Number
     v::T
     dv::T
