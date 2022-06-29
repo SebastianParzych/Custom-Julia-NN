@@ -150,3 +150,14 @@ function getDefaultAniaNet(nHidden)
     net.AddLayer(nHidden, 3, σ)
     return net
 end
+
+
+
+
+function getAniaResults(nHidden, X_train, y_train, X_test, y_test, epochs, lr)
+    aniaNet = getDefaultAniaNet(nHidden)
+    aniaLossHistory, AniaAccHistory = trainAnia(aniaNet, X_train, y_train, epochs, lr)
+    aniaAccTrainVal = getTrainingAccValFromHistory(AniaAccHistory)
+    acc_history, AniaTestAccVal = accuracy(aniaNet, X_test, y_test)
+    return aniaLossHistory, AniaAccHistory, aniaAccTrainVal, acc_history, AniaTestAccVal
+end

@@ -16,11 +16,14 @@ accuracy(m, x, y) = mean(onecold(m(x), classes) .== onecold(y, classes))
 function create_model(nHiddenm)
     return Chain(
         Dense(size(X_train, 1), nHiddenm, relu),
-        Dense(nHiddenm, size(y_train, 1), identity),
-        softmax,
+        Dense(nHiddenm, size(y_train, 1), σ),
     )
 end
 
+setModelParams(model) =
+    let
+        return Flux.params(model)
+    end
 
 getFluxAccuracyValFromTest(net, X, y) =
     let
@@ -34,10 +37,11 @@ getFluxAccuracyValFromTest(net, X, y) =
     end
 
 function getDefaultFlux(nHiddenm)
-    return create_model(nHiddenm), DEFAULT_OPT, DEFAULT_LOSS_FUN, DEFAULT_PARAMS
+    model = create_model(nHiddenm)
+    return model, DEFAULT_OPT, DEFAULT_LOSS_FUN, setModelParams(model)
 end
 
-function train(net, ps, X_train, y_train, epochs, opt, LossFun)
+function trainFlux(net, ps, X_train, y_train, epochs, opt, LossFun)
     acc_test = zeros(epochs)
     Loss_history = similar(acc_test)
     for i in 1:epochs
@@ -48,4 +52,13 @@ function train(net, ps, X_train, y_train, epochs, opt, LossFun)
         acc_test[i] = accuracy(net, X_test, y_test)
     end
     return Loss_history, acc_test
+end
+
+
+function getFluxResults(nHidden, X_train, y_train, X_test, y_test, epochs, lr)
+    fluxNet, opt, loss, params = getDefaultFlux(nHidden)
+    fluxLossHistory, fluxAccuracyTrainingHistory = trainFlux(fluxNet, params, X_train, y_train, epochs, opt, loss)
+    fluxAccuracyTrainingVal = getTrainingAccValFromHistory(fluxAccuracyTrainingHistory)
+    fluxAccuracyTestHistory, fluxAccuracyTestVal = getFluxAccuracyValFromTest(fluxNet, X_test, y_test)
+    return fluxLossHistory, fluxAccuracyTrainingHistory, fluxAccuracyTrainingVal, fluxAccuracyTestHistory, fluxAccuracyTestVal
 end
