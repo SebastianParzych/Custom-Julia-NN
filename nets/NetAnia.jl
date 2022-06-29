@@ -1,4 +1,4 @@
-
+include("./../utils/NetFunctions.jl")
 diagonal(m) = diagm(0 => vec(m))
 J = function jacobian(f, args::Vector{T}) where {T<:Number}
     jacobian_columns = Matrix{T}[]
@@ -137,9 +137,12 @@ accuracy(network, X, y) =
             y = y_train[:, i]
             push!(accuracy_history, predict(network, x) == argmax(y) ? 1 : 0)
         end
-        return accuracy_history, sum(accuracy_history) / length(accuracy_history) * 100
+        return accuracy_history, sum(accuracy_history) / length(accuracy_history)
     end
-
+accuracyFromAccHistory(history) =
+    let
+        return sum(history) / length(history)
+    end
 function getDefaultAniaNet()
     net = NeuralNetwork()
     net.AddLayer(4, 4, ReLU)

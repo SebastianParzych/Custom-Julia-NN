@@ -1,5 +1,5 @@
 
-Random.seed!(2)
+Random.seed!(4)
 
 function custom_split(X, y::AbstractVector; dims=1, ratio_train=0.8, kwargs...)
     n = length(y)

@@ -6,6 +6,10 @@ identityFunction(x) = x
 σ(x) = one(x) / (one(x) + exp(-x))
 tanh(x) = 2.0 / (one(x) + exp(-2.0x)) - one(x)
 
+
+function getTrainingAccValFromHistory(acc_his)
+    return sum(acc_his) / length(acc_his)
+end
 # Funkcje kosztu
 mean_squared_loss(y::Vector, ŷ::Vector) = sum(0.5(y - ŷ) .^ 2)
 

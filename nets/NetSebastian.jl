@@ -1,5 +1,5 @@
 DefaultNet() = randn(4, 4), randn(3, 4), randn(4, 4), randn(3, 4)
-
+fullyconnected(w::Vector, n::Number, m::Number, v::Vector, activation::Function) = activation.(reshape(w, n, m) * v)
 function predict(net, x)
     x̂ = fullyconnected(net.Wh[:], 4, 4, x, ReLU)
     ŷ = fullyconnected(net.Wo[:], 3, 4, x̂, σ)
@@ -60,6 +60,6 @@ function accuracySebastian(network, X, y)
             y = y_train[:, i]
             push!(accuracy_history, predict(network, x) == argmax(y) ? 1 : 0)
         end
-        return accuracy_history, sum(accuracy_history) / length(accuracy_history) * 100
+        return accuracy_history, sum(accuracy_history) / length(accuracy_history)
     end
 end

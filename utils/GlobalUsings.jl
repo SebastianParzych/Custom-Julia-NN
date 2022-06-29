@@ -1,7 +1,7 @@
 using Pkg
 libs = [:Random, :Statistics, :RDatasets,
     :DataFrames, :Plots, :TimerOutputs, :Flux, :LinearAlgebra,
-    :Combinatorics
+    :Combinatorics, :PlutoUI
 ]
 
 tryusing(pkgsym) =
